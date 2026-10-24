@@ -1,0 +1,26 @@
+---
+/**
+ * Renders a report's Markdown.
+ *
+ * Astro processes relative image paths (`img/x.png`) at build time and emits
+ * hashed, optimised URLs prefixed with the site's base, so nothing here has to
+ * rewrite them.
+ */
+import { getEntry, render } from 'astro:content';
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const entry = await getEntry('docs', id);
+if (!entry) throw new Error(`Report "${id}" was not found`);
+
+const { Content, headings } = await render(entry);
+
+export { headings };
+---
+
+<div class="report">
+  <Content />
+</div>

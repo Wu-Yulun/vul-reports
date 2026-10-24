@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { LOCALES, type Locale } from '../lib/locales';
+import { withBase } from '../lib/url';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const other: Locale = locale === 'zh-CN' ? 'en' : 'zh-CN';
+
+const reports = (await getCollection('docs'))
+  .filter((entry) => entry.data.locale === locale)
+  .sort((a, b) => b.data.date.localeCompare(a.data.date) || a.data.title.localeCompare(b.data.title));
+
+const { dateFormat } = LOCALES[locale];
+const title = locale === 'zh-CN' ? '漏洞报告' : 'Vulnerability Reports';
+---
+
+<Base
+  title={title}
+  locale={locale}
+  home={withBase(LOCALES[locale].home)}
+  alternate={{ locale: other, label: LOCALES[other].label, href: withBase(LOCALES[other].home) }}
+>
+  <h1 class="page-title">{title}</h1>
+  <ol class="report-list">
+    {
+      reports.map((entry) => (
+        <li>
+          <a href={withBase(`${entry.id}/`)}>{entry.data.title}</a>
+          <time datetime={entry.data.date}>{dateFormat(entry.data.date)}</time>
+        </li>
+      ))
+    }
+  </ol>
+</Base>

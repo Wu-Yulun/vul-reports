@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ReportBody from '../components/ReportBody.astro';
+import { LOCALES, type Locale } from '../lib/locales';
+import { withBase } from '../lib/url';
+import { getAlternate } from '../lib/report';
+
+export async function getStaticPaths() {
+  const reports = await getCollection('docs');
+  return reports.map((entry) => ({
+    params: { slug: entry.id },
+    props: { id: entry.id },
+  }));
+}
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+const entry = await getCollection('docs').then((all) => all.find((candidate) => candidate.id === id)!);
+const locale = entry.data.locale as Locale;
+const home = withBase(LOCALES[locale].home);
+const alternate = await getAlternate(id, locale);
+---
+
+<Base title={entry.data.title} locale={locale} home={home} alternate={alternate}>
+  <article>
+    <ReportBody id={id} />
+  </article>
+  <footer class="report-footer">
+    <a href={home}>← {locale === 'zh-CN' ? '返回列表' : 'All reports'}</a>
+    <time datetime={entry.data.date}>{LOCALES[locale].dateFormat(entry.data.date)}</time>
+  </footer>
+</Base>
