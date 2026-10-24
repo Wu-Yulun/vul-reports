@@ -8,6 +8,8 @@
   --border: #dddddd;
   --link: #0b5cad;
   --code-bg: #ececec;
+  --scrollbar-thumb: #c9c9c9;
+  --scrollbar-thumb-hover: #a8a8a8;
   --measure: 52rem;
   --font-serif: 'Source Serif 4', 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun',
     Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, 'Times New Roman', serif;
@@ -27,6 +29,8 @@
     --border: #35322c;
     --link: #8ab4f8;
     --code-bg: #2a2a2a;
+    --scrollbar-thumb: #4a4a4a;
+    --scrollbar-thumb-hover: #5f5f5f;
   }
 }
 
@@ -42,8 +46,7 @@ html {
 }
 
 body {
-  margin: 0 auto;
-  max-width: var(--measure);
+  margin: 0;
   padding: 1rem 1.5rem 6rem;
   background: var(--bg);
   color: var(--fg);
@@ -74,6 +77,8 @@ a:hover {
   padding-bottom: 0.9rem;
   margin-bottom: 1.3rem;
 }
+
+/* The header now lives inside the page column, so it lines up with the text. */
 
 .site-title {
   display: inline-flex;
@@ -119,8 +124,22 @@ h1 {
   letter-spacing: -0.01em;
 }
 
+/* The report date, shown small and muted beside the title. */
+.report h1::after {
+  content: var(--report-date);
+  margin-left: 1.1em;
+  font-family: var(--font-serif);
+  font-size: 0.5em;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+  white-space: nowrap;
+  vertical-align: 0.15em;
+}
+
 h2 {
   font-size: 1.42rem;
+  margin-top: 3rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
@@ -199,12 +218,32 @@ code {
 
 pre {
   overflow-x: auto;
-  padding: 1rem 1.15rem;
+  padding: 0.5rem 1.15rem;
   border-radius: 4px;
   border: 1px solid var(--border);
   font-size: 0.9375rem;
   line-height: 1.55;
   tab-size: 2;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* WebKit/Blink scrollbars: a slim rounded thumb that appears on hover. */
+pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+pre::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
 }
 
 pre code {
@@ -324,5 +363,85 @@ hr {
   pre {
     font-size: 0.875rem;
     padding: 0.85rem;
+  }
+}
+
+
+/* Page column -------------------------------------------------------------
+   The text column is what gets centred; the table of contents is taken out of
+   the flow and parked in the right margin, so adding it never shifts the
+   text away from the middle of the screen. */
+.page {
+  margin: 0 auto;
+  max-width: var(--measure);
+}
+
+.report-layout {
+  position: relative;
+}
+
+.toc {
+  display: none;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.toc-title {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid var(--border);
+}
+
+.toc li {
+  margin: 0;
+}
+
+.toc a {
+  display: block;
+  padding: 0.3rem 0 0.3rem 0.75rem;
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.toc a:hover {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.toc a.is-active {
+  color: var(--link);
+  border-left-color: var(--link);
+}
+
+/* Jumped-to headings must not land under the top edge. */
+.report h2 {
+  scroll-margin-top: 1.5rem;
+}
+
+/* Wide enough for the text column, the gap and the contents to sit side by side. */
+@media (min-width: 74rem) {
+  .toc {
+    display: block;
+    position: fixed;
+    top: 2rem;
+    left: calc(50% + var(--measure) / 2 + 2.5rem);
+    width: 13rem;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
   }
 }

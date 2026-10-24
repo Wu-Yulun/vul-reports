@@ -38,29 +38,31 @@ const siteTitle = locale === 'zh-CN' ? '首页' : 'Home';
     {alternate && <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />}
   </head>
   <body>
-    <header class="site-header">
-      <a class="site-title" href={home}>
-        <svg
-          class="site-title-icon"
-          viewBox="0 0 24 24"
-          width="14"
-          height="14"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 10.5 12 3l9 7.5" />
-          <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
-        </svg>
-        {siteTitle}
-      </a>
-      {alternate && <a class="locale-link" href={alternate.href}>{alternate.label}</a>}
-    </header>
-    <main>
-      <slot />
-    </main>
+    <div class="page">
+      <header class="site-header">
+        <a class="site-title" href={home}>
+          <svg
+            class="site-title-icon"
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 10.5 12 3l9 7.5" />
+            <path d="M5.5 9.5V20a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V9.5" />
+          </svg>
+          {siteTitle}
+        </a>
+        {alternate && <a class="locale-link" href={alternate.href}>{alternate.label}</a>}
+      </header>
+      <main>
+        <slot />
+      </main>
+    </div>
   </body>
 </html>

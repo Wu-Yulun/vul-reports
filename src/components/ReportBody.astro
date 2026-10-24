@@ -1,12 +1,15 @@
 ---
 /**
- * Renders a report's Markdown.
+ * Renders a report's Markdown, plus a floating table of contents on wide
+ * screens built from the report's `h2` headings.
  *
  * Astro processes relative image paths (`img/x.png`) at build time and emits
  * hashed, optimised URLs prefixed with the site's base, so nothing here has to
- * rewrite them.
+ * rewrite them. Heading ids come from the generated HTML, so the anchors match
+ * the rendered headings while the source stays exactly as written.
  */
 import { getEntry, render } from 'astro:content';
+import { LOCALES, type Locale } from '../lib/locales';
 
 interface Props {
   id: string;
@@ -17,10 +20,84 @@ const entry = await getEntry('docs', id);
 if (!entry) throw new Error(`Report "${id}" was not found`);
 
 const { Content, headings } = await render(entry);
+const sections = headings.filter((heading) => heading.depth === 2);
 
-export { headings };
+const locale = entry.data.locale as Locale;
+const tocTitle = locale === 'zh-CN' ? '目录' : 'Contents';
 ---
 
-<div class="report">
-  <Content />
+<div class="report-layout">
+  <div class="report">
+    <Content />
+  </div>
+
+  {
+    sections.length > 0 && (
+      <nav class="toc" aria-label={tocTitle}>
+        <p class="toc-title">{tocTitle}</p>
+        <ul>
+          {sections.map((section) => (
+            <li>
+              <a href={`#${section.slug}`}>{section.text}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
 </div>
+
+<script>
+  // Marks the section currently in view, and follows in-page jumps to the
+  // table of contents.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc a'));
+  const idOf = (link: HTMLAnchorElement) => decodeURIComponent(link.hash.slice(1));
+
+  if (links.length > 0) {
+    const targets = links
+      .map((link) => document.getElementById(idOf(link)))
+      .filter((element): element is HTMLElement => element !== null);
+
+    const setActive = (id: string) => {
+      for (const link of links) {
+        link.classList.toggle('is-active', idOf(link) === id);
+      }
+    };
+
+    // The section a scroll position belongs to: the last heading whose top has
+    // already passed the reading line, so a section keeps its highlight until
+    // the next one reaches that line.
+    const readingLine = 96;
+    const activeAt = (): string | undefined => {
+      let current: string | undefined;
+      for (const target of targets) {
+        if (target.getBoundingClientRect().top <= readingLine) current = target.id;
+        else break;
+      }
+      return current ?? targets[0]?.id;
+    };
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const id = activeAt();
+      if (id) setActive(id);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', schedule);
+
+    // A jump inside the page lands the heading exactly at the top edge, which
+    // is above the reading line; recompute once the jump has happened.
+    addEventListener('hashchange', () => {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (id) setActive(id);
+      schedule();
+    });
+
+    update();
+  }
+</script>

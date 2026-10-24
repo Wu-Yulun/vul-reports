@@ -23,14 +23,14 @@ const entry = await getCollection('docs').then((all) => all.find((candidate) => 
 const locale = entry.data.locale as Locale;
 const home = withBase(LOCALES[locale].home);
 const alternate = await getAlternate(id, locale);
+const date = LOCALES[locale].dateFormat(entry.data.date);
 ---
 
 <Base title={entry.data.title} locale={locale} home={home} alternate={alternate}>
-  <article>
+  <article style={`--report-date: "${date}"`}>
     <ReportBody id={id} />
   </article>
   <footer class="report-footer">
     <a href={home}>← {locale === 'zh-CN' ? '返回列表' : 'All reports'}</a>
-    <time datetime={entry.data.date}>{LOCALES[locale].dateFormat(entry.data.date)}</time>
   </footer>
 </Base>
