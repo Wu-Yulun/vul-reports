@@ -1,11 +1,14 @@
 ---
 import '../styles/global.css';
-import { withBase } from '../lib/url';
+import { absoluteFromHref, absoluteUrl, withBase } from '../lib/url';
+import { siteName } from '../lib/seo';
 
 interface Props {
   title: string;
-  description?: string;
+  description: string;
   locale?: 'en' | 'zh-CN';
+  /** App-relative path of this page, e.g. `/20261024/free-fs/`. */
+  path: string;
   /** Home page of the current locale. */
   home: string;
   /**
@@ -14,11 +17,46 @@ interface Props {
    * guaranteed: a report may exist in only one language.
    */
   alternate: { locale: 'en' | 'zh-CN'; label: string; href: string } | null;
+  /** `article` for a report, `website` for a list page. */
+  type?: 'website' | 'article';
+  /** ISO date, for reports. */
+  published?: string;
+  /** Structured data; `url` is filled in when missing. */
+  jsonLd?: Record<string, unknown>;
+  /** Keep a page out of search results. */
+  noindex?: boolean;
 }
 
-const { title, description = 'Vulnerability reports.', locale = 'en', home, alternate } = Astro.props;
+const {
+  title,
+  description,
+  locale = 'en',
+  path,
+  home,
+  alternate,
+  type = 'website',
+  published,
+  jsonLd,
+  noindex = false,
+} = Astro.props;
 
 const siteTitle = locale === 'zh-CN' ? '首页' : 'Home';
+
+const canonical = absoluteUrl(path);
+const alternateUrl = alternate ? absoluteFromHref(alternate.href) : null;
+
+// Every translation known to exist, including this page itself.
+const english = locale === 'en' ? canonical : alternate?.locale === 'en' ? alternateUrl : null;
+const chinese = locale === 'zh-CN' ? canonical : alternate?.locale === 'zh-CN' ? alternateUrl : null;
+const xDefault = english ?? chinese ?? canonical;
+
+const structuredData = jsonLd
+  ? { '@context': 'https://schema.org', url: canonical, ...jsonLd }
+  : null;
+// `</script>` inside a JSON string would end the block early.
+const structuredJson = structuredData
+  ? JSON.stringify(structuredData).replace(/</g, '\\u003c')
+  : null;
 ---
 
 <!doctype html>
@@ -29,6 +67,30 @@ const siteTitle = locale === 'zh-CN' ? '首页' : 'Home';
     <title>{title}</title>
     <link rel="icon" href={withBase('/logo.svg')} type="image/svg+xml" />
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+
+    {english && <link rel="alternate" hreflang="en" href={english} />}
+    {chinese && <link rel="alternate" hreflang="zh-CN" href={chinese} />}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
+
+    <meta property="og:site_name" content={siteName(locale)} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'zh-CN' ? 'zh_CN' : 'en_US'} />
+    {alternate && (
+      <meta
+        property="og:locale:alternate"
+        content={alternate.locale === 'zh-CN' ? 'zh_CN' : 'en_US'}
+      />
+    )}
+    {published && <meta property="article:published_time" content={published} />}
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,7 +99,7 @@ const siteTitle = locale === 'zh-CN' ? '首页' : 'Home';
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@700&family=Noto+Serif+SC:wght@400;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap"
     />
 
-    {alternate && <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />}
+    {structuredJson && <script type="application/ld+json" set:html={structuredJson} />}
   </head>
   <body>
     <div class="page">

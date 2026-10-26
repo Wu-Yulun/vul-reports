@@ -3,8 +3,9 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ReportBody from '../components/ReportBody.astro';
 import { LOCALES, type Locale } from '../lib/locales';
-import { withBase } from '../lib/url';
+import { absoluteUrl, withBase } from '../lib/url';
 import { getAlternate } from '../lib/report';
+import { describeReport, isoDate, siteName } from '../lib/seo';
 
 export async function getStaticPaths() {
   const reports = await getCollection('docs');
@@ -24,9 +25,42 @@ const locale = entry.data.locale as Locale;
 const home = withBase(LOCALES[locale].home);
 const alternate = await getAlternate(id, locale);
 const date = LOCALES[locale].dateFormat(entry.data.date);
+
+const path = `/${id}/`;
+const published = isoDate(entry.data.date);
+const description = describeReport({
+  body: entry.data.body,
+  title: entry.data.title,
+  locale,
+  date: entry.data.date,
+});
+
+const jsonLd = {
+  '@type': 'TechArticle',
+  headline: entry.data.title,
+  description,
+  datePublished: published,
+  dateModified: published,
+  inLanguage: locale,
+  isPartOf: {
+    '@type': 'WebSite',
+    name: siteName(locale),
+    url: absoluteUrl(LOCALES[locale].home),
+  },
+};
 ---
 
-<Base title={entry.data.title} locale={locale} home={home} alternate={alternate}>
+<Base
+  title={entry.data.title}
+  description={description}
+  locale={locale}
+  path={path}
+  home={home}
+  alternate={alternate}
+  type="article"
+  published={published}
+  jsonLd={jsonLd}
+>
   <article style={`--report-date: "${date}"`}>
     <ReportBody id={id} />
   </article>

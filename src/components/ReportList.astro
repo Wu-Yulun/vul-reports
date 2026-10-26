@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { LOCALES, type Locale } from '../lib/locales';
 import { withBase } from '../lib/url';
+import { isoDate } from '../lib/seo';
 
 interface Props {
   locale: Locale;
@@ -17,13 +18,28 @@ const reports = (await getCollection('docs'))
 
 const { dateFormat } = LOCALES[locale];
 const title = locale === 'zh-CN' ? '报告清单' : 'All Reports';
+const description =
+  locale === 'zh-CN'
+    ? '漏洞报告清单，按日期倒序排列。每份报告包含漏洞成因、复现环境搭建与复现过程，提供中文与英文两个版本。'
+    : 'Vulnerability reports, newest first. Each one covers the root cause, a reproducible environment and the reproduction steps, in English and Chinese.';
+
+const newest = reports[0]?.data.date;
 ---
 
 <Base
   title={title}
+  description={description}
   locale={locale}
+  path={LOCALES[locale].home}
   home={withBase(LOCALES[locale].home)}
   alternate={{ locale: other, label: LOCALES[other].label, href: withBase(LOCALES[other].home) }}
+  jsonLd={{
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    inLanguage: locale,
+    ...(newest ? { dateModified: isoDate(newest) } : {}),
+  }}
 >
   <h1 class="page-title">{title}</h1>
   <ol class="report-list">
