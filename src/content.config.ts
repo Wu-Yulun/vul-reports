@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 /**
  * Reports live at the repository root as `<date>/<software>/readme.md` and
@@ -13,7 +14,9 @@ import path from 'node:path';
  * Astro project root, and refuses to leave `src/content`.
  */
 
-const repoRoot = process.cwd();
+// Derived from this file's location, not `process.cwd()`, so a build started
+// from a parent directory (CI, editors, monorepos) still finds the reports.
+const repoRoot = fileURLToPath(new URL('../', import.meta.url));
 const reportName = /^readme(?:\.([A-Za-z-]+))?\.md$/;
 const dateName = /^\d{8}$/;
 
