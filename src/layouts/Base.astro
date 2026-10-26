@@ -76,8 +76,8 @@ const structuredJson = structuredData
     <link
       rel="alternate"
       type="application/rss+xml"
-      title={siteName('en')}
-      href={withBase('/rss.xml')}
+      title={siteName(locale)}
+      href={locale === 'zh-CN' ? withBase('/zh-CN/rss.xml') : withBase('/rss.xml')}
     />
 
     <meta property="og:site_name" content={siteName(locale)} />
