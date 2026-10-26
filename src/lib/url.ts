@@ -1,6 +1,6 @@
 /**
- * Base path handling for sub-path hosting (`https://user.github.io/vul-reports/`).
- * Astro rewrites asset URLs itself; this helper is for links we write by hand.
+ * Base path handling. The site is served from the domain root now; the helper
+ * stays so links keep working if it ever moves under a sub-path again.
  */
 export function withBase(path: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
