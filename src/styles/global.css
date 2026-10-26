@@ -6,6 +6,7 @@
   --fg: #26282c;
   --muted: #656d76;
   --border: #dddddd;
+  --rule: #e8e8e8;
   --link: #0b5cad;
   --code-bg: #ececec;
   --scrollbar-thumb: #c9c9c9;
@@ -27,6 +28,7 @@
     --fg: #e8e6e1;
     --muted: #a09a91;
     --border: #35322c;
+    --rule: #2b2823;
     --link: #8ab4f8;
     --code-bg: #2a2a2a;
     --scrollbar-thumb: #4a4a4a;
@@ -290,7 +292,7 @@ hr {
 /* Home list */
 .page-title {
   font-size: 1.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
 }
 
 .report-list {
@@ -299,24 +301,36 @@ hr {
   margin: 0;
 }
 
+.report-list li + li {
+  border-top: 1px solid var(--rule);
+}
+
+/*
+ * A fixed date column keeps every title on the same left edge, which stays
+ * legible once the list grows past a screenful.
+ */
 .report-list li {
-  display: flex;
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
   align-items: baseline;
-  justify-content: space-between;
-  gap: 1.25rem;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+  padding: 0.42rem 0;
 }
 
-.report-list li:first-child {
-  border-top: 1px solid var(--border);
+.report-date {
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.report-list a {
-  font-size: 1.0625rem;
+.report-title {
+  justify-self: start;
+  font-size: 0.9375rem;
+  line-height: 1.45;
 }
 
-.report-list time,
 .report-footer time {
   color: var(--muted);
   font-size: 0.8125rem;
@@ -352,12 +366,12 @@ hr {
   }
 
   .report-list li {
-    display: block;
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
   }
 
-  .report-list time {
-    display: block;
-    margin-top: 0.15rem;
+  .report-date {
+    grid-row: 2;
   }
 
   pre {

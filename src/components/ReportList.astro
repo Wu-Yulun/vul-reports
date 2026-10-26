@@ -16,7 +16,7 @@ const reports = (await getCollection('docs'))
   .sort((a, b) => b.data.date.localeCompare(a.data.date) || a.data.title.localeCompare(b.data.title));
 
 const { dateFormat } = LOCALES[locale];
-const title = locale === 'zh-CN' ? '漏洞报告' : 'Vulnerability Reports';
+const title = locale === 'zh-CN' ? '报告清单' : 'All Reports';
 ---
 
 <Base
@@ -30,8 +30,10 @@ const title = locale === 'zh-CN' ? '漏洞报告' : 'Vulnerability Reports';
     {
       reports.map((entry) => (
         <li>
-          <a href={withBase(`${entry.id}/`)}>{entry.data.title}</a>
-          <time datetime={entry.data.date}>{dateFormat(entry.data.date)}</time>
+          <time class="report-date" datetime={entry.data.date}>
+            {dateFormat(entry.data.date)}
+          </time>
+          <a class="report-title" href={withBase(`${entry.id}/`)}>{entry.data.title}</a>
         </li>
       ))
     }
