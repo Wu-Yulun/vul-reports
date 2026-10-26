@@ -11,8 +11,8 @@ export function siteName(locale: Locale): string {
 }
 
 const METADATA =
-  /^(软件名称|开发者或厂商|开发者|厂商|代码仓库|受影响版本|影响版本|前置条件|Software|Developer|Vendor|Repository|Affected versions|Prerequisites)\s*[:：]/i;
-const SUMMARY = /^(简要描述|漏洞描述|Summary|Description)\s*[:：]\s*/i;
+  /^(软件名称|开发者或厂商|开发者|厂商|代码仓库|受影响版本|影响版本|前置条件|Developer or vendor|Code repository|Software|Developer|Vendor|Repository|Affected versions|Preconditions?)\s*[:：]/i;
+const SUMMARY = /^(简要描述|漏洞描述|Brief description|Summary|Description)\s*[:：]\s*/i;
 
 function stripMarkdown(text: string): string {
   return text
