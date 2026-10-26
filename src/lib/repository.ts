@@ -1,20 +1,15 @@
 /**
  * Links back to the report source on GitHub.
  *
- * The repository is taken from the site's own URL (`https://<user>.github.io/<repo>`
- * for GitHub Pages), so no extra configuration is needed; it can be overridden
- * with `PUBLIC_REPOSITORY` when the site is hosted elsewhere.
+ * The repository is a constant: the site is served from its own domain now, so
+ * there is nothing in the URL left to infer it from. `PUBLIC_REPOSITORY`
+ * overrides it for a fork or a mirror.
  */
+const DEFAULT_REPOSITORY = 'https://github.com/Wu-Yulun/vul-reports';
+
 function resolveRepository(): string {
   const override = import.meta.env.PUBLIC_REPOSITORY;
-  if (override) return override.replace(/\/$/, '');
-
-  const site = import.meta.env.SITE;
-  const match = site?.match(/^https:\/\/([^./]+)\.github\.io/);
-  if (!match) return '';
-
-  const base = import.meta.env.BASE_URL.replace(/^\/|\/$/g, '');
-  return `https://github.com/${match[1]}/${base}`;
+  return (override || DEFAULT_REPOSITORY).replace(/\/$/, '');
 }
 
 export const REPOSITORY_URL = resolveRepository();
