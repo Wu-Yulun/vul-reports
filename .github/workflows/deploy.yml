@@ -25,7 +25,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Astro 7 needs >= 22.23.4; 24 is the current LTS line.
+          node-version: 24
           cache: npm
 
       - run: npm ci
