@@ -83,6 +83,8 @@ const docs = defineCollection({
     locale: z.string(),
     software: z.string(),
     date: z.string(),
+    /** Path of the source file relative to the repository root. */
+    sourcePath: z.string(),
     body: z.string(),
   }),
   loader: {
@@ -112,6 +114,7 @@ const docs = defineCollection({
               locale: report.locale,
               software: report.software,
               date: report.date,
+              sourcePath: report.filePath,
               body,
             },
           });
