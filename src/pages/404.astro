@@ -2,25 +2,19 @@
 import Base from '../layouts/Base.astro';
 import { withBase } from '../lib/url';
 
-const description = '页面不存在。Page not found.';
+const description = 'There is nothing at this address. The link may be out of date or mistyped.';
 ---
 
 <Base
-  title="页面不存在 · Page not found"
+  title="Page not found"
   description={description}
-  locale="zh-CN"
+  locale="en"
   path="/404.html"
   home={withBase('/')}
   alternate={null}
   noindex
 >
-  <h1>页面不存在</h1>
-  <p>这个地址下没有内容，可能是链接过期或输入有误。</p>
-  <p>
-    <a href={withBase('/')}>查看全部报告</a>
-  </p>
-
-  <h2>Page not found</h2>
+  <h1>Page not found</h1>
   <p>There is nothing at this address. The link may be out of date or mistyped.</p>
   <p>
     <a href={withBase('/')}>All reports</a>
