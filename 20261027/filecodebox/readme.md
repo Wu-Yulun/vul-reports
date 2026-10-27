@@ -14,7 +14,7 @@ Affected versions: 2.4.0 to 2.8.4
 
 Preconditions: The instance allows guest uploads, and the victim opens the share link provided by the attacker.
 
-Fix: https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537
+Fix: [FileCodeBoxFronted commit 4c40406d](https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537)
 
 ### Root cause
 

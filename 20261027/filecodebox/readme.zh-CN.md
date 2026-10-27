@@ -14,7 +14,7 @@
 
 前置条件：站点允许游客上传，且受害者打开攻击者提供的分享链接。
 
-修复：https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537
+修复：[FileCodeBoxFronted commit 4c40406d](https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537)
 
 ### 漏洞成因
 
