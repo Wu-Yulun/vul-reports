@@ -53,6 +53,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-serif);
+  /* Break long URLs rather than pushing the page sideways. */
+  overflow-wrap: break-word;
   font-size: 1.0625rem;
   line-height: 1.7;
   font-synthesis: none;
@@ -117,7 +119,18 @@ h4 {
   font-weight: 700;
   line-height: 1.35;
   margin: 2.1rem 0 0.6rem;
-  text-wrap: balance;
+  /* Keep Latin words, numbers and inline code whole; Chinese still breaks at
+     any character. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  /* Balanced wrapping suits short Latin headings, but with Chinese it splits
+     a line into two near-equal fragments: "…解析异" / "常时输出…". Let Chinese
+     headings fill each line and only wrap at the column edge. */
+  text-wrap: pretty;
+}
+
+html[lang='zh-CN'] h2 {
+  text-wrap: wrap;
 }
 
 h1 {
@@ -203,6 +216,13 @@ html[lang='zh-CN'] .report h1 + p + p + p + p + p + p,
 html[lang='zh-CN'] .report h1 + p + p + p + p + p + p + p,
 html[lang='zh-CN'] .report h1 + p + p + p + p + p + p + p + p {
   text-indent: 0;
+}
+
+/* Links to a commit, a release or a raw URL can be far longer than the column.
+   Break them at any character rather than letting them run past the edge and
+   give the whole page a horizontal scrollbar. */
+.report a {
+  overflow-wrap: anywhere;
 }
 
 /* Code */
@@ -363,6 +383,8 @@ hr {
 
   h2 {
     font-size: 1.2rem;
+    /* Narrower columns need a word to break rather than overflow. */
+    word-break: normal;
   }
 
   .report-list li {
@@ -382,9 +404,10 @@ hr {
 
 
 /* Page column -------------------------------------------------------------
-   The text column is what gets centred; the table of contents is taken out of
-   the flow and parked in the right margin, so adding it never shifts the
-   text away from the middle of the screen. */
+   The text column is what gets centred. The contents are parked in the right
+   margin, out of the flow, so they never shift the text away from the middle
+   of the screen. When the margin is too narrow to hold them without clipping,
+   they are hidden rather than allowed to spill past the edge. */
 .page {
   margin: 0 auto;
   max-width: var(--measure);
@@ -469,13 +492,19 @@ hr {
   scroll-margin-top: 1.5rem;
 }
 
-/* Wide enough for the text column, the gap and the contents to sit side by side. */
-@media (min-width: 74rem) {
+/* The contents only appear once the right margin can hold them in full.
+   90rem = 52rem text + 2 × (1.5rem page padding + 2.5rem gap + 15rem
+   contents): below that the text would have to leave the middle of the page
+   for the contents to fit, so they are hidden instead. */
+@media (min-width: 90rem) {
   .toc {
     display: block;
     position: fixed;
     top: 2rem;
-    left: calc(50% + var(--measure) / 2 + 2.5rem);
+    /* Anchor the right edge, not the left: this keeps the same 1.5rem margin
+       as the page no matter how wide the browser's scrollbar is. The contents
+       grow leftwards from there, beside the centred text column. */
+    right: calc(50% - var(--measure) / 2 - 2.5rem - 15rem);
     width: 15rem;
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
