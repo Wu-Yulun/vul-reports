@@ -14,6 +14,8 @@ Affected versions: 2.4.0 to 2.8.4
 
 Preconditions: The instance allows guest uploads, and the victim opens the share link provided by the attacker.
 
+Fix: https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537
+
 ### Root cause
 
 The 2024 theme renders the Markdown preview of a text share in the browser. `renderMarkdownPreview` first parses the body with `marked` and then sanitizes the result with DOMPurify. When parsing throws, the function returns the original body to its caller:

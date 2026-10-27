@@ -14,6 +14,8 @@
 
 前置条件：站点允许游客上传，且受害者打开攻击者提供的分享链接。
 
+修复：https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537
+
 ### 漏洞成因
 
 文本分享的 Markdown 预览由 2024 主题在前端渲染。渲染函数 `renderMarkdownPreview` 先用 `marked` 把正文解析为 HTML，再交给 DOMPurify 净化。解析阶段抛出异常时，该函数直接把原始正文返回给调用方，相关代码如下：
