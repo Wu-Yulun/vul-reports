@@ -14,7 +14,7 @@ Affected versions: 0.1.13 to 2.9.0
 
 Preconditions: The attacker holds an ordinary member account and can convince the instance owner to open a link.
 
-### Root cause
+### Root Cause
 
 EdgeEver stores attachments in the `resources` table, which has two important columns. `kind` decides how the browser handles the response: `image` is served `inline` and `attachment` is downloaded. `mime_type` decides the response `Content-Type`. During a normal upload both columns are derived from the same `Content-Type`, so they always agree.
 
@@ -66,7 +66,7 @@ When the victim opens the malicious attachment link, the browser parses the atta
 
 The script can obtain an API Token through `POST /api/v1/api-tokens` and send it back to the attacker, who can then read and write the victim's notes. This API Token never expires by default.
 
-### Reproduction environment
+### Reproduction Environment
 
 The lab runs the official image. Create a directory and write the following `docker-compose.yml`:
 

@@ -14,7 +14,7 @@ Affected versions: 2.9.1 to 2.9.7
 
 Preconditions: The administrator opens the attacker's mail in the webmail.
 
-### Root cause
+### Root Cause
 
 An attacker can send a mail with an attachment that contains malicious HTML. When a user views the mail, the mail detail endpoint `/api/email/detail` performs a string replacement on the message body, replacing `cid:attachment-id` with the attachment URL. The code is as follows:
 
@@ -62,7 +62,7 @@ In addition, the attacker can set the `style` attribute, so the link can be writ
    style="position:fixed;inset:0;z-index:2147483647;font-size:0;background:rgba(0,0,0,0.08) repeating-linear-gradient(45deg,transparent 0 12px,rgba(0,0,0,0.18) 12px 24px)">Open document</a>
 ```
 
-### Reproduction environment
+### Reproduction Environment
 
 The test environment is deployed with the official image:
 
@@ -163,7 +163,7 @@ Affected versions: 2.7.2 to 2.9.7
 
 Preconditions: The attacker holds an ordinary account on the target instance.
 
-### Root cause
+### Root Cause
 
 When `/api/email/send` sends a mail, the HTML delivered to the recipients is sanitized, but the server also stores an unfiltered copy in the sender's mailbox.
 
@@ -185,7 +185,7 @@ func GetEmailDetail(ctx *context.Context, id int, markRead bool) (*response.Emai
 
 When the administrator reads this mail from the backend, the code runs in the administrator's browser.
 
-### Reproduction environment
+### Reproduction Environment
 
 The setup is the same as in section 1, with an additional ordinary account and with local delivery enabled inside the container:
 

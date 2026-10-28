@@ -14,7 +14,7 @@ Affected versions: 2.0.x through 2.3.x
 
 Preconditions: The attacker holds any account that can log in. If self-registration is open, the attacker can create one directly.
 
-### Root cause
+### Root Cause
 
 `FileShareServiceImpl.getPages` passes the request parameter `orderBy` to `StrUtil.toUnderlineCase` and then hands the resulting string to `wrapper.orderBy` of MyBatis-Flex. That overload builds a `RawQueryColumn` from the string and places it into the SQL verbatim, with no column whitelist, while `StrUtil.toUnderlineCase` only converts camel case to snake case and filters nothing. The relevant code is shown below:
 
@@ -33,7 +33,7 @@ The injection point sits in the `ORDER BY` clause, so an attacker can supply an 
 
 The same construct already existed in `getList` in 2.0.1. Only the method name and its location changed afterwards, and it survived until 2.3.1.
 
-### Reproduction environment
+### Reproduction Environment
 
 The environment is deployed with the compose file shipped in the repository:
 
@@ -145,7 +145,7 @@ Affected versions: 2.0.x through 2.3.x
 
 Preconditions: The attacker knows the email address of the target account.
 
-### Root cause
+### Root Cause
 
 `SysUserServiceImpl.updateForgetPassword` compares the submitted code with the code stored in Redis using a single string comparison. On failure it neither increments a failure counter nor invalidates the issued code, and it applies no account lockout or delay. The relevant code is shown below:
 
@@ -168,7 +168,7 @@ Within those five minutes, however, `updateForgetPassword` neither counts failur
 
 Version 2.3.x added a rate limit to the endpoint that issues codes, allowing one request per email address every 60 seconds, controlled by `VERIFY_CODE_SEND_INTERVAL_SECONDS = 60`. That limit only affects the sending of codes, not the brute force, and 60 seconds is shorter than the five-minute lifetime, so this patch does nothing to fix the vulnerability.
 
-### Reproduction environment
+### Reproduction Environment
 
 The environment is deployed with the compose file shipped in the repository:
 
@@ -219,7 +219,7 @@ Affected versions: 2.0.x through 2.3.x
 
 Preconditions: A known file ID, which can be obtained through the SQL injection.
 
-### Root cause
+### Root Cause
 
 Since 2.0.1 the login interceptor only covers `/apis/**`, while `/api/file/stream` and the static resource mapping `/files/**` fall outside it. The `/api/file/stream/preview/{fileId}` endpoint of `FileStreamController` loads the file record by ID and returns its content without checking who is calling or which workspace the file belongs to. The `PreviewInterceptor` added in 2.2.0 only covers `/preview/**`, `/archive/preview/**` and the archive inner file stream, so it does not protect this endpoint either. The relevant code is shown below:
 
@@ -238,7 +238,7 @@ public ResponseEntity<StreamingResponseBody> preview(@PathVariable String fileId
 }
 ```
 
-### Reproduction environment
+### Reproduction Environment
 
 The environment is deployed with the compose file shipped in the repository:
 
@@ -289,7 +289,7 @@ Affected versions: 2.0.x through 2.3.x
 
 Preconditions: The victim opens a preview link supplied by the attacker.
 
-### Root cause
+### Root Cause
 
 `FileStreamController` derives the `Content-Type` from the original file extension when it assembles the response headers and always sets `Content-Disposition` to `inline`. It does not check whether the file type is safe and does not add `X-Content-Type-Options`, so a file ending in `.html` is parsed as a page by the browser and its script runs immediately. The relevant code is shown below:
 
@@ -305,7 +305,7 @@ headers.set(HttpHeaders.CONTENT_DISPOSITION,
 
 The same flaw holds under the unauthenticated condition described in section 3, so an attacker without any account can send a phishing link to any logged-in user. The script runs in the same origin as the application and can therefore call the endpoints under `/apis` with the cookie of the victim.
 
-### Reproduction environment
+### Reproduction Environment
 
 The environment is deployed with the compose file shipped in the repository:
 
@@ -356,7 +356,7 @@ Affected versions: 2.0.x through 2.3.x
 
 Preconditions: A known share ID.
 
-### Root cause
+### Root Cause
 
 Between 2.0.x and 2.2.x, `getShareFileItems` only checked that the share record exists and `downloadFiles` only checked that the file belongs to the share. Neither read the share code and neither looked at `scope`. Version 2.3.x extracted these two checks into `FileShareServiceImpl.getValidShare` and `getShareAccessibleFile` and added checks for the expiry time and the view limit, but still does not compare the share code and still does not read `scope`. The relevant code is shown below:
 
@@ -382,7 +382,7 @@ private FileShare getValidShare(String shareId) {
 
 `getValidShare` neither compares `share_code` nor reads `scope`, so the share code and the permission scope impose no constraint on the list endpoint and the download endpoint.
 
-### Reproduction environment
+### Reproduction Environment
 
 The back end and the front end are started separately. The back end is deployed with the compose file shipped in the repository:
 

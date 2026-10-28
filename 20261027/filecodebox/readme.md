@@ -16,7 +16,7 @@ Preconditions: The instance allows guest uploads, and the victim opens the share
 
 Fix: [FileCodeBoxFronted commit 4c40406d](https://github.com/vastsa/FileCodeBoxFronted/commit/4c40406d366af1583a3ba2327366b7a62d765537)
 
-### Root cause
+### Root Cause
 
 The 2024 theme renders the Markdown preview of a text share in the browser. `renderMarkdownPreview` first parses the body with `marked` and then sanitizes the result with DOMPurify. When parsing throws, the function returns the original body to its caller:
 
@@ -63,7 +63,7 @@ if (newFileData.content) {
 
 The script therefore runs in the origin of the site itself and can read the token in `localStorage`, which gives the attacker control of the account.
 
-### Reproduction environment
+### Reproduction Environment
 
 ```bash
 mkdir filecodebox && cd filecodebox

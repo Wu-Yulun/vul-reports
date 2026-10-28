@@ -14,7 +14,7 @@ Affected versions: SeaDoc 2.0.x to 3.x
 
 Preconditions: The instance has a public .sdoc share link, or a published wiki.
 
-### Root cause
+### Root Cause
 
 SeaDoc consists of three processes. `seahub` handles authentication and page rendering, `sdoc-server` handles collaborative editing, and `seadoc-converter` converts documents. All three share the same HMAC key, `JWT_PRIVATE_KEY`. When a visitor opens a public .sdoc share link, `seahub` embeds a JWT token in the page so that anonymous preview works.
 
@@ -111,7 +111,7 @@ A file on disk does not execute by itself. `/api/v1/file-convert/` logs the uplo
 
 `Response.text` evaluates `str(self.content, encoding)`, where `encoding` comes from the `charset` parameter of the response header. If the upload address answers `500` and declares `charset=cp273`, CPython lazily imports the corresponding codec from the `encodings` package. `FileFinder` looks for the directory package `<name>/__init__.py` before the module `<name>.py`, so the import resolves to the planted `encodings/cp273/__init__.py`. Its code then runs inside the converter process, and no restart is needed.
 
-### Reproduction environment
+### Reproduction Environment
 
 The lab runs the official Docker compose deployment:
 
