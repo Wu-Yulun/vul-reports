@@ -14,7 +14,7 @@ Affected versions: 0.17.0 to 1.6.1
 
 Preconditions: The attacker holds an account with report management permission.
 
-### Root Cause
+### Root cause
 
 The report preview endpoint `POST /reporting/templates/preview/` takes the `template_md` submitted by the user, renders it to HTML and hands the result to WeasyPrint for PDF generation:
 
@@ -87,7 +87,7 @@ nginx proxies `/natsws` to the NATS websocket port:
 
 An attacker who reads `SECRET_KEY` can use it as the password to connect to `wss://<API_HOST>/natsws` as `tacticalrmm`, and publish `runscript` to any `agent_id`. The bus delivers the message to the agent without going through Django, so there is no permission check, and neither `AgentHistory` nor `AuditLog` records the command.
 
-### Reproduction Environment
+### Reproduction environment
 
 The lab uses the official compose deployment:
 
