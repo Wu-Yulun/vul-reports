@@ -84,7 +84,14 @@ a:hover {
 
 /* The header now lives inside the page column, so it lines up with the text. */
 
-.site-title {
+.site-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.site-title,
+.rss-link {
   display: inline-flex;
   align-items: center;
   gap: 0.22em;
@@ -92,12 +99,14 @@ a:hover {
   color: var(--muted);
 }
 
-.site-title-icon {
+.site-title-icon,
+.rss-link-icon {
   flex: none;
   transform: translateY(-0.5px);
 }
 
-.site-title:hover {
+.site-title:hover,
+.rss-link:hover {
   color: var(--link);
 }
 
