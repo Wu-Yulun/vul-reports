@@ -304,6 +304,63 @@ th {
   font-weight: 600;
 }
 
+/* The labelled lines that open a report section (description, affected
+   versions, preconditions, fix) are a definition table, not a data table:
+   `display: table` undoes the scrolling block used above. */
+.report-facts {
+  display: table;
+  width: 100%;
+  /* The label column sizes itself to its longest label (see `th`), so the
+     English and Chinese labels both fit without a hand-tuned width. */
+  table-layout: auto;
+  margin: 1.1rem 0 1.3rem;
+  /* These lines are body text, not tabular data: the global `table` rule
+     shrinks tables to 0.9375rem, which would set them apart from the prose
+     around them. */
+  font-size: inherit;
+}
+
+.report-facts th,
+.report-facts td {
+  /* No rules, no outer padding and no vertical padding: a row is exactly as
+     tall as its lines of body text, so the distance from one row to the next
+     is the body's own line height. The gutter between the two columns is the
+     label cell's right padding. */
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+}
+
+/* Both columns are plain body text: the label carries no colour, weight or
+   fill of its own, only its column position. `width` and `nowrap` together
+   make the column exactly as wide as the longest label, so the Chinese
+   four-character labels and the longer English ones both fit with no padding
+   to spare; the value column then takes all the remaining width. */
+.report-facts th {
+  width: 0;
+  padding-right: 0.85rem;
+  white-space: nowrap;
+  background: none;
+  color: inherit;
+  font-weight: inherit;
+}
+
+/* Narrow screens: the label sits above its value so the description keeps the
+   full column width. */
+@media (max-width: 34rem) {
+  .report-facts,
+  .report-facts tbody,
+  .report-facts tr,
+  .report-facts th,
+  .report-facts td {
+    display: block;
+  }
+
+  .report-facts th {
+    width: auto;
+  }
+}
+
 /* Quotes and rules */
 blockquote {
   margin-left: 0;

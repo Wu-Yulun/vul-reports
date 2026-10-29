@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import { fileURLToPath } from 'node:url';
+import { satteri } from '@astrojs/markdown-satteri';
+import reportFacts from './src/lib/satteri-report-facts.mjs';
 
 const root = fileURLToPath(new URL('./', import.meta.url));
 
@@ -20,5 +22,8 @@ export default defineConfig({
   },
   markdown: {
     shikiConfig: { themes: { light: 'one-light', dark: 'one-dark-pro' } },
+    // Turns the labelled lines under each report heading into a table. The
+    // source Markdown keeps its plain `Label: value` lines.
+    processor: satteri({ hastPlugins: [reportFacts] }),
   },
 });
