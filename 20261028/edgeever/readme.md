@@ -14,6 +14,8 @@ Affected versions: 0.1.13 to 2.9.0
 
 Preconditions: The attacker holds an ordinary member account and can convince the instance owner to open a link.
 
+Fix: [edgeever commit dc5a55a1](https://github.com/tianma-if/edgeever/commit/dc5a55a1c26d6add0e28d95dc0b282c611692e34)
+
 ### Root Cause
 
 EdgeEver stores attachments in the `resources` table, which has two important columns. `kind` decides how the browser handles the response: `image` is served `inline` and `attachment` is downloaded. `mime_type` decides the response `Content-Type`. During a normal upload both columns are derived from the same `Content-Type`, so they always agree.

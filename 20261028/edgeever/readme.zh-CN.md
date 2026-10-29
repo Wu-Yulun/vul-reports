@@ -14,6 +14,8 @@
 
 前置条件：攻击者持有普通成员账号，并且能诱使实例所有者打开一个链接。
 
+修复：[edgeever commit dc5a55a1](https://github.com/tianma-if/edgeever/commit/dc5a55a1c26d6add0e28d95dc0b282c611692e34)
+
 ### 漏洞成因
 
 EdgeEver 的附件存放在 `resources` 表中，该表有两个重要字段：`kind` 决定浏览器如何处理响应（`image` 走 `inline`，`attachment` 走下载），`mime_type` 决定响应的 `Content-Type`。正常上传时这两列由同一个 `Content-Type` 推导，因此始终一致。

@@ -4,3 +4,4 @@ dist/
 .openchamber/
 .cortexkit/
 .wrangler/
+AGENTS.md
