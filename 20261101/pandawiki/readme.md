@@ -2,15 +2,15 @@
 
 Software: PandaWiki
 
-Vendor: Chaitin Tech
+Developer or vendor: Chaitin Tech
 
-Repository: https://github.com/chaitin/PandaWiki
+Code repository: https://github.com/chaitin/PandaWiki
 
 ## 1. Anonymous Upload of an HTML File Leads to Stored XSS
 
-Summary: When a knowledge base does not have an access password enabled, an anonymous attacker can upload an image file whose contents are HTML. Any user who visits that file is XSSed.
+Brief description: When a knowledge base does not have an access password enabled, an anonymous attacker can upload an image file whose contents are HTML, and a user who visits that file is XSSed.
 
-Affected versions: 3.65.0 ~ 3.87.5
+Affected versions: 3.65.0 to 3.87.5
 
 Preconditions: The attacker needs to lure a user into opening a specific link.
 
@@ -71,9 +71,9 @@ This configuration was introduced by commit `bfcaed09` (`feat(pdf) preview`, 202
 
 The admin console (`/api/v1/*`) and `/static-file/` are served by the same nginx instance, so they are same-origin. The console keeps its login credential in `localStorage['panda_wiki_token']`, so a script in the uploaded page can read it directly.
 
-### Lab Setup
+### Reproduction Environment
 
-The lab is deployed with the official docker compose file:
+The lab runs the official Docker compose deployment:
 
 ```bash
 mkdir pandawiki && cd pandawiki
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=18871, log_level="warning")
 ```
 
-Lure the administrator into opening the link the attacker sent. The page shows the JWT read from `localStorage`:
+Lure the administrator into opening the link the attacker sent. The page displays the JWT it read from `localStorage`:
 
 ![](img/03-executed.png)
 
